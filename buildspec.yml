@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging into Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 345594581177.dkr.ecr.us-east-1.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - docker build -t finaltestapp .
+      - docker tag finaltestapp:latest 345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - docker push 345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest
+artifacts:
+  files: appspec.yml
