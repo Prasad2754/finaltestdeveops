@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Deploy ECS Fargate service with ALB
+Description: Deploy ECS Fargate service with ALB and CodeDeploy integration
 
 Parameters:
   VpcCIDR:
@@ -19,8 +19,6 @@ Parameters:
     Default: 10.0.4.0/24
 
 Resources:
-
-  # VPC and Subnets
   VPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -95,13 +93,11 @@ Resources:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
 
-  # ECS Cluster
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
       ClusterName: finaltest-cluster
 
-  # Security Groups
   ALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -124,7 +120,6 @@ Resources:
           ToPort: 5000
           SourceSecurityGroupId: !Ref ALBSecurityGroup
 
-  # ALB
   ApplicationLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -156,7 +151,6 @@ Resources:
       Port: 80
       Protocol: HTTP
 
-  # IAM Role for ECS task execution
   ECSExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -171,7 +165,6 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
 
-  # Task Definition
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -188,7 +181,6 @@ Resources:
             - ContainerPort: 5000
           Essential: true
 
-  # ECS Service
   ECSService:
     Type: AWS::ECS::Service
     DependsOn: ALBListener
@@ -197,6 +189,8 @@ Resources:
       Cluster: !Ref ECSCluster
       LaunchType: FARGATE
       DesiredCount: 1
+      DeploymentController:
+        Type: CODE_DEPLOY
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
