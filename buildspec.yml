@@ -8,12 +8,11 @@ phases:
   build:
     commands:
       - echo Building the Docker image...
-      - cd src
       - docker build -t finaltestapp .
       - docker tag finaltestapp:latest 345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest
   post_build:
     commands:
-      - echo Pushing the Docker image to ECR...
+      - echo Pushing the Docker image...
       - docker push 345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest
       - echo Writing image definitions file...
       - printf '[{"name":"finaltest-service-codedeploy","imageUri":"345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest"}]' > imagedefinitions.json
