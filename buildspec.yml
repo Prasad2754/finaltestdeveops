@@ -5,16 +5,18 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 345594581177.dkr.ecr.us-east-1.amazonaws.com
+
   build:
     commands:
       - echo Building the Docker image...
       - docker build -t finaltestapp .
       - docker tag finaltestapp:latest 345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest
+
   post_build:
     commands:
-      - echo Pushing the Docker image...
+      - echo Pushing the Docker image to Amazon ECR...
       - docker push 345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest
-      - echo Writing image definitions file...
+      - echo Writing imagedefinitions.json file...
       - printf '[{"name":"finaltest-service-codedeploy","imageUri":"345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest"}]' > imagedefinitions.json
 
 artifacts:

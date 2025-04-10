@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM public.ecr.aws/python/python:3.11-slim
 
 WORKDIR /app
 COPY requirements.txt .
