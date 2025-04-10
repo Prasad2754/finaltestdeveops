@@ -185,7 +185,7 @@ Resources:
     Type: AWS::ECS::Service
     DependsOn: ALBListener
     Properties:
-      ServiceName: finaltest-service
+      ServiceName: finaltest-service-codedeploy
       Cluster: !Ref ECSCluster
       LaunchType: FARGATE
       DesiredCount: 1
