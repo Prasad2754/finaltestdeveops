@@ -1,22 +1,23 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      python: 3.11
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 345594581177.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
-      - echo Building Docker image...
+      - echo Build started on `date`
+      - echo Building the Docker image...
       - docker build -t finaltestapp .
       - docker tag finaltestapp:latest 345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest
   post_build:
     commands:
+      - echo Build completed on `date`
       - echo Pushing image to ECR...
       - docker push 345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest
-      - echo Creating imagedefinitions.json...
-      - printf '[{"name":"finaltestapp","imageUri":"345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest"}]' > imagedefinitions.json
-
 artifacts:
-  files:
-    - imagedefinitions.json
+  files: '**/*'
