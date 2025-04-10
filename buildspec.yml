@@ -15,6 +15,10 @@ phases:
     commands:
       - echo Pushing the Docker image to ECR...
       - docker push 345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest
+      - echo Writing image definitions file...
+      - printf '[{"name":"finaltest-service-codedeploy","imageUri":"345594581177.dkr.ecr.us-east-1.amazonaws.com/finaltestapp:latest"}]' > imagedefinitions.json
 
 artifacts:
-  files: '**/*'
+  files:
+    - appspec.yml
+    - imagedefinitions.json
